@@ -1,0 +1,99 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgb(219, 217, 217);
+}
+.ToDoList_container {
+    padding: 20px;
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+}
+.ToDoList_container_title {
+    margin-bottom: 20px;
+}
+.ToDoList_container_form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+.ToDoList_container_input {
+    flex: 1;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px;
+}
+.ToDoList_container_button {
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+    background-color: rgb(30, 162, 30);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.ToDoList_container_button:hover {
+    background-color: green;
+}
+.ToDoList_container_sectionG {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 20px;
+}
+.ToDoList_container_sectionG_title {
+    font-size: 17px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+}
+.ToDoList_container_section {
+    width: 100%;
+    text-align: left; 
+}
+.ToDoList_container_listG {
+    list-style: none;
+}
+.ToDoList_container_list {
+    margin-bottom: 10px;
+    background-color: #e7e6e6;
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    border-radius: 5px;
+}
+.ToDoList_continer_list_button {
+    background-color: rgb(218, 4, 4);
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.ToDoList_continer_list_button:hover {
+    background-color: rgb(163, 2, 2);
+}
+.ToDoList_continer_list_button_complete {
+    background-color: rgb(30, 162, 30);
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.ToDoList_continer_list_button_complete:hover {
+    background-color: green;
+}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo</title>
+    <link rel="stylesheet" href="./style.css">
+    <script type="module" src="./dist/script.js" defer></script>
+</head>
+<body>
+    <div class="ToDoList_container">
+        <h1 class="ToDoList_container_title">YEON TODO</h1>
+        <form id="ToDo_form" class="ToDoList_container_form">
+            <input type="text" id="ToDo_input" class="ToDoList_container_input" placeholder="할 일 입력" required>
+            <button type="submit" class="ToDoList_container_button">할 일 추가</button>
+        </form>
+        <div class="ToDoList_container_sectionG">
+            <div class="ToDoList_container_section">
+                <h3 class="ToDoList_container_sectionG_title">할 일</h3>
+                <ul id="ToDo_list" class="ToDoList_container_listG">
+                </ul>
+            </div>
+            <div class="ToDoList_container_section">
+                <h3 class="ToDoList_container_sectionG_title">완료</h3>
+                <ul id="done_list" class="ToDoList_container_listG">
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
