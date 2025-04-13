@@ -11,6 +11,7 @@ const SignupPage = () => {
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
     const [step, setStep] = useState(1);
     const [showPassword, setShowPassword] = useState(false);
+    
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
