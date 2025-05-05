@@ -1,0 +1,55 @@
+import { createBrowserRouter, RouterProvider,RouteObject } from 'react-router-dom'
+import './App.css'
+import { HomePage } from './pages/HomePage'
+import { LoginPage } from './pages/LoginPage'
+import HomeLayout from './layouts/HomeLayout'
+import { SignupPage } from './pages/SignupPage'
+import { AuthProvider } from './context/AuthContext'
+import NotFoundPage from './pages/NotFoundPage'
+import { MyPage } from './pages/MyPage'
+import { ProtectedLayout } from './layouts/ProtectedLayout'
+import { GoogleLoginRedirectPage } from './pages/GoogleLoginRedirectPage'
+
+const publicRouter: RouteObject[] = [
+  {
+    path: "/v1/auth/google/callback",
+    element: <GoogleLoginRedirectPage />,
+  },
+  {
+    path: "/",
+    element: <HomeLayout />,
+    errorElement: <NotFoundPage />,
+    children: [
+      { index: true, element: <HomePage /> },
+      { path: "login", element: <LoginPage /> },
+      { path: "signup", element: <SignupPage /> },
+    ]
+  }
+];
+
+// 인증 필요한 페이지 protectedRoutes
+const protectedRoutes:RouteObject[]=[
+  {
+    path:"/",
+    element:<ProtectedLayout/>,
+    errorElement: <NotFoundPage/>,
+    children:[
+      {
+        path:"my",
+        element:<MyPage/>,
+      }
+    ]
+  }
+]
+
+const router=createBrowserRouter( [...publicRouter, ...protectedRoutes]);
+
+function App() {
+  return (
+    <AuthProvider>
+      <RouterProvider router = {router}/>
+    </AuthProvider>
+  );
+}
+
+export default App
