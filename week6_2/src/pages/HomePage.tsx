@@ -3,6 +3,7 @@ import { useGetInfiniteLpList } from "../hooks/queries/useGetinfiniteLPList";
 import { PAGINATION_ORDER } from "../enums/common";
 import { useInView } from "react-intersection-observer";
 import { LpCard } from "../components/LpCard/LpCard";
+import { LpCardSkeleton } from "../components/LpCard/LpCardSkeleton";
 import { useNavigate } from "react-router-dom";
 
 export const HomePage = () => {
@@ -64,6 +65,11 @@ export const HomePage = () => {
             >
               <LpCard lp={lp} />
             </div>
+          ))}
+        {/* 로딩 중일 때 스켈레톤 카드 5개 표시 */}
+        {isFetching &&
+          Array.from({ length: 5 }).map((_, idx) => (
+            <LpCardSkeleton key={`skeleton-${idx}`} />
           ))}
       </div>
 

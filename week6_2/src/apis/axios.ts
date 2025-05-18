@@ -14,7 +14,7 @@ export const axiosInstance=axios.create({
     withCredentials:true,
 })
 
-//요청 인터셉터: 모든 요청 전에 accessToken을 Authorization 헤더에 추가가
+//요청 인터셉터: 모든 요청 전에 accessToken을 Authorization 헤더에 추가
 axiosInstance.interceptors.request.use((config) => {
     const token = localStorage.getItem(LOCAL_STORAGE_KEY.accessToken);
 
@@ -70,7 +70,7 @@ axiosInstance.interceptors.response.use(
                     });
                     //새 토큰이 반환
                     const {setItem:setAccessToken}=useLocalStorage(
-                        LOCAL_STORAGE_KEY.refreshToken,
+                        LOCAL_STORAGE_KEY.accessToken,
                     );
                     const {setItem:setRefreshToken}=useLocalStorage(
                         LOCAL_STORAGE_KEY.refreshToken,
