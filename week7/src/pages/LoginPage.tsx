@@ -1,13 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import useForm from "../hooks/useForm"
 import { UserSigninInformation, validateSignin } from "../utils/validate"
+import { useLoginMutation } from "../hooks/mutations/useLogin";
 
 export const LoginPage = () => {
-    const navigate = useNavigate(); // useNavigate 훅 사용
-    const{login}=useAuth();
+    const navigate = useNavigate();
 
-    const {values, errors, touched, getInputProps} =
+    const { values, errors, touched, getInputProps } =
         useForm<UserSigninInformation>( {
         initialValue: {
             email: "",
@@ -16,24 +15,15 @@ export const LoginPage = () => {
         validate: validateSignin,
     });
 
+    // 로그인 useMutation
+     const mutation = useLoginMutation();
 
-    const handleSubmit = async () => {
-        try {
-            await login({
-              email: values.email,
-              password: values.password,
-            });
-
-          // 알림 + 마이페이지 이동
-          alert("로그인 성공!");
-          setTimeout(() => {
-            navigate("/my");
-          }, 0);
-        } catch (error) {
-          console.error("로그인 실패:", error);
-          alert("로그인 실패! 이메일 또는 비밀번호를 확인하세요.");
-        }
-      };
+    const handleSubmit = () => {
+        mutation.mutate({
+            email: values.email,
+            password: values.password,
+        });
+    };
 
     const handleGoogleLogin=()=> {
         window.location.href = `${import.meta.env.VITE_SERVER_API_URL}/v1/auth/google/login?prompt=select_account`;
@@ -63,11 +53,11 @@ export const LoginPage = () => {
                 placeholder={"비밀번호"} />
             {errors?.password && touched?.password && (<div className="text-red-500 text-sm">{errors.password}</div>)}
             <button
-                type='button' onClick={handleSubmit} disabled={isDisabled}
-                className={`w-full py-3 rounded-md text-lg transition-colors cursor-pointer ${isDisabled
+                type='button' onClick={handleSubmit} disabled={isDisabled || mutation.isPending}
+                className={`w-full py-3 rounded-md text-lg transition-colors cursor-pointer ${isDisabled || mutation.isPending
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                         : "bg-pink-300 text-white hover:bg-pink-200"}`}
-            >로그인</button>
+            >{mutation.isPending ? "로그인 중..." : "로그인"}</button>
 
             <button
                 type="button" onClick={handleGoogleLogin}  className="w-full bg-gray-700 text-white py-3 rounded md text-lg font-medium hover:bg-gray-500 transition-colors cursor-pointer disabled:bg-gray-300">

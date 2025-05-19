@@ -3,6 +3,8 @@ import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { ResponseMyInfoDto } from "../types/auth";
 import { getMyInfo } from "../apis/auth";
+import useLogoutMutation from "../hooks/mutations/useLogout";
+import { useMyInfo } from "../hooks/queries/useMyInfo";
 
 interface NavBarProps {
   onToggleSidebar?: () => void;
@@ -11,17 +13,13 @@ interface NavBarProps {
 export const NavBar = ({ onToggleSidebar }: NavBarProps) => {
   const { accessToken, logout } = useAuth();
   const navigate = useNavigate();
-  const [data, setData] = useState<ResponseMyInfoDto | null>(null);
+  const { data } = useMyInfo();
 
-  useEffect(() => {
-    if (accessToken) {
-      getMyInfo().then(setData);
-    }
-  }, [accessToken]);
+  // 로그아웃 useMutation
+const logoutMutation = useLogoutMutation();
 
-  const handleLogout = async () => {
-    await logout();
-    navigate("/");
+  const handleLogout = () => {
+    logoutMutation.mutate();
   };
 
   return (
@@ -40,7 +38,6 @@ export const NavBar = ({ onToggleSidebar }: NavBarProps) => {
         </div>
 
         <div className="flex items-center gap-4">
-
           {!accessToken ? (
             <>
               <Link to="/login" className="text-white hover:text-pink-400">

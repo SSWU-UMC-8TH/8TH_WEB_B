@@ -11,7 +11,7 @@ interface DeleteCommentParams {
 }
 
 const deleteComment = async ({ commentId, lpId }: DeleteCommentParams) => {
-  await axiosInstance.delete(`api/v1/lps/${lpId}/comments/${commentId}`);
+  await axiosInstance.delete(`/v1/lps/${lpId}/comments/${commentId}`);
 };
 
 export default function useDeleteComment() {
