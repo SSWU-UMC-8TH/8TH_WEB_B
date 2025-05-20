@@ -3,6 +3,7 @@ import { RequestSigninDto, ResponseMyInfoDto } from "../types/auth";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { LOCAL_STORAGE_KEY } from "../constants/key";
 import { postLogout, postSignin, getMyInfo } from "../apis/auth";
+import { queryClient } from "../App";
 
 interface AuthContextType {
   accessToken: string | null;
@@ -57,20 +58,22 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
-  const logout = async () => {
-    try {
-      await postLogout();
-      removeAccessTokenFromStorage();
-      removeRefreshFromStorage();
-      setAccessToken(null);
-      setRefreshToken(null);
-      setUser(null);
-      alert("로그아웃 성공");
-    } catch (error) {
-      console.error("로그아웃 오류", error);
-      alert("로그아웃 실패");
-    }
-  };
+const logout = async () => {
+  try {
+    await postLogout(); // 서버에 로그아웃 요청 (401 무시 가능)
+  } catch (error) {
+    // 401 등 에러 무시
+  }
+  // 토큰/유저 상태 초기화
+  removeAccessTokenFromStorage();
+  removeRefreshFromStorage();
+  setAccessToken(null);
+  setRefreshToken(null);
+  setUser(null);
+  // 쿼리 캐시 초기화
+  queryClient.clear();
+};
+
 
   useEffect(() => {
     const storedAccess = getAccessTokenFromStorage();

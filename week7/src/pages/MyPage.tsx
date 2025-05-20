@@ -1,32 +1,24 @@
-import { useEffect, useState, useRef } from "react";
-import { getMyInfo } from "../apis/auth";
-import { ResponseMyInfoDto } from "../types/auth";
-import { useAuth } from "../context/AuthContext";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import useEditProfile from "../hooks/mutations/useEditProfile";
+import { useQueryClient } from "@tanstack/react-query";
+import { useMyInfo } from "../hooks/queries/useMyInfo";
 
 export const MyPage = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const queryClient = useQueryClient();
 
-  const [data, setData] = useState<ResponseMyInfoDto | null>(null);
+  const { data } = useMyInfo(); // 캐시에서 사용자 정보 가져오기(Optimistic Update)
   const [editMode, setEditMode] = useState(false);
-  const [name, setName] = useState("");
-  const [bio, setBio] = useState("");
+  const [name, setName] = useState(data?.data?.name ?? "");
+  const [bio, setBio] = useState(data?.data?.bio ?? "");
   const [profileImg, setProfileImg] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(
+    data?.data?.profileImageUrl ?? null
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    const getData = async () => {
-      const response = await getMyInfo();
-      setData(response);
-      setName(response.data.name);
-      setBio(response.data.bio ?? "");
-      setPreview(response.data.profileImageUrl ?? null);
-    };
-    getData();
-  }, []);
 
   const editProfileMutation = useEditProfile();
 
@@ -68,6 +60,7 @@ export const MyPage = () => {
             onChange={handleImageChange}
           />
         </div>
+
         {/* 이름, bio */}
         {editMode ? (
           <div className="flex flex-col items-center gap-2 w-64">
@@ -85,42 +78,38 @@ export const MyPage = () => {
               placeholder="한 줄 소개"
             />
             <div className="flex gap-5">
-            <button
-              className="mt-2 px-4 py-2 bg-pink-400 text-white rounded hover:bg-pink-500"
-              onClick={() =>
-                editProfileMutation.mutate(
-                  { name, bio, profileImg },
-                  {
-                    onSuccess: (res) => {
-                      setData((prev) =>
-                        prev
-                          ? {
-                              ...prev,
-                              data: {
-                                ...prev.data,
-                                name,
-                                bio,
-                                profileImageUrl: res.data.profileImageUrl,
-                              },
-                            }
-                          : prev
-                      );
-                      setEditMode(false);
-                    },
-                  }
-                )
-              }
-              disabled={editProfileMutation.isPending}
-            >
-              저장
-            </button>
-            <button
-              className="mt-2 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-              onClick={() => setEditMode(false)}
-            >
-              취소
-            </button>
-          </div>
+              <button
+                className="mt-2 px-4 py-2 bg-pink-400 text-white rounded hover:bg-pink-500"
+                onClick={() =>
+                  editProfileMutation.mutate(
+                    { name, bio, profileImg },
+                    {
+                      onSuccess: (res) => {
+                        queryClient.setQueryData(["myInfo"], (old: any) => ({
+                          ...old,
+                          data: {
+                            ...old.data,
+                            name,
+                            bio,
+                            profileImageUrl: res.data.profileImageUrl,
+                          },
+                        }));
+                        setEditMode(false);
+                      },
+                    }
+                  )
+                }
+                disabled={editProfileMutation.isPending}
+              >
+                저장
+              </button>
+              <button
+                className="mt-2 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                onClick={() => setEditMode(false)}
+              >
+                취소
+              </button>
+            </div>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-2 w-64">

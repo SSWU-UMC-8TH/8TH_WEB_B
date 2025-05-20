@@ -1,8 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useEffect, useState } from "react";
-import { ResponseMyInfoDto } from "../types/auth";
-import { getMyInfo } from "../apis/auth";
 import useLogoutMutation from "../hooks/mutations/useLogout";
 import { useMyInfo } from "../hooks/queries/useMyInfo";
 
@@ -11,12 +8,10 @@ interface NavBarProps {
 }
 
 export const NavBar = ({ onToggleSidebar }: NavBarProps) => {
-  const { accessToken, logout } = useAuth();
+  const { accessToken } = useAuth();
   const navigate = useNavigate();
-  const { data } = useMyInfo();
-
-  // 로그아웃 useMutation
-const logoutMutation = useLogoutMutation();
+  const logoutMutation = useLogoutMutation();
+  const { data } = useMyInfo(); // 캐시에서 바로 가져옴(Optimistic Update)
 
   const handleLogout = () => {
     logoutMutation.mutate();

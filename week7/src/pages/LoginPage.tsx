@@ -16,7 +16,7 @@ export const LoginPage = () => {
     });
 
     // 로그인 useMutation
-     const mutation = useLoginMutation();
+    const mutation = useLoginMutation();
 
     const handleSubmit = () => {
         mutation.mutate({
@@ -40,14 +40,14 @@ export const LoginPage = () => {
         <div className="flex flex-col gap-3">
             <input
                 {...getInputProps("email")}
-                className={`border border-[#ccc] w-[300px] p-[10px] focus:border-[#807bff]
+                className={`bg-white border border-[#ccc] w-[300px] p-[10px] focus:border-[#807bff]
             ${errors?.email && touched?.email ? "border-red-500 bg-red-200" : "border-gray-300"}`}
                 type={"email"}
                 placeholder={"이메일"} />
             {errors?.email && touched?.email && (<div className="text-red-500 text-sm">{errors.email}</div>)}
             <input
                 {...getInputProps("password")}
-                className={`border border-[#ccc] w-[300px] p-[10px] focus:border-[#807bff]
+                className={`bg-white border border-[#ccc] w-[300px] p-[10px] focus:border-[#807bff]
             ${errors?.password && touched?.password ? "border-red-500 bg-red-200" : "border-gray-300"}`}
                 type={"password"}
                 placeholder={"비밀번호"} />

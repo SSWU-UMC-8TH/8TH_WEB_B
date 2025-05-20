@@ -1,6 +1,4 @@
-//mypage 프로필 수정
-
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { axiosInstance } from "../../apis/axios";
 
 interface EditProfileParams {
@@ -19,37 +17,8 @@ const editProfile = async ({ name, bio, profileImg }: EditProfileParams) => {
 };
 
 const useEditProfile = () => {
-  const queryClient = useQueryClient();
-  
   return useMutation({
     mutationFn: editProfile,
-    onMutate: async (newData) => {
-      await queryClient.cancelQueries({ queryKey: ["myInfo"] });
-
-      const previousData = queryClient.getQueryData(["myInfo"]);
-
-      queryClient.setQueryData(["myInfo"], (old: any) => ({
-        ...old,
-        data: {
-          ...old.data,
-          name: newData.name,
-          bio: newData.bio,
-        },
-      }));
-
-      return { previousData };
-    },
-    onError: (_err, _newData, context) => {
-      if (context?.previousData) {
-        queryClient.setQueryData(["myInfo"], context.previousData);
-      }
-    },
-    onSuccess: (res) => {
-      queryClient.setQueryData(["myInfo"], res);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["myInfo"] });
-    },
   });
 };
 

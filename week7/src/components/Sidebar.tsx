@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../apis/axios";
+import { useAuth } from "../context/AuthContext";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -9,17 +10,19 @@ interface SidebarProps {
 export const Sidebar = ({ isOpen }: SidebarProps) => {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   // 탈퇴 처리 함수
   const handleWithdraw = async () => {
-    try {
-      await axiosInstance.delete(`/v1/users`);
-      // 로그아웃 처리 등 추가
-      navigate("/");
-    } catch (e) {
-      alert("탈퇴에 실패했습니다.");
-    }
-  };
+  try {
+    await axiosInstance.delete(`/v1/users`);
+    await logout();
+    navigate("/");
+  } catch (e) {
+    console.error(e);
+    alert("탈퇴에 실패했습니다.");
+  }
+};
 
   return (
     <div
