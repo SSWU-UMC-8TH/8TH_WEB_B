@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useGetInfiniteLpList } from "../hooks/queries/useGetinfiniteLPList";
 import { PAGINATION_ORDER } from "../enums/common";
-import { useInView } from "react-intersection-observer";
 import { LpCard } from "../components/LpCard/LpCard";
 import { LpCardSkeleton } from "../components/LpCard/LpCardSkeleton";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useDebounce } from "../hooks/useDebounce";
+import { useThrottle } from "../hooks/useThrottle";
 
 const LpModal = ({
   open,
@@ -31,20 +32,21 @@ const LpModal = ({
       tags.forEach(tag => formData.append("tags", tag));
       if (image) formData.append("file", image);
       for (const pair of formData.entries()) {
-        console.log(pair[0], pair[1]);}
+        console.log(pair[0], pair[1]);
+      }
 
       const accessToken = localStorage.getItem("accessToken");
 
       const res = await fetch(`api/v1/lps`, {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    if (!res.ok) throw new Error("LP 등록 실패");
-    return res.json();
-  },
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!res.ok) throw new Error("LP 등록 실패");
+      return res.json();
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["lpList"] });
       onClose();
@@ -182,6 +184,7 @@ const LpModal = ({
 
 export const HomePage = () => {
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
   const [order, setOrder] = useState<PAGINATION_ORDER>(PAGINATION_ORDER.desc);
   const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -191,18 +194,42 @@ export const HomePage = () => {
     isFetching,
     hasNextPage,
     fetchNextPage,
-  } = useGetInfiniteLpList(10, search, order);
+  } = useGetInfiniteLpList(10, debouncedSearch, order);
 
-  const { ref, inView } = useInView({ threshold: 0.5 });
+  const throttledFetchNextPage = useThrottle(() => {
+    if (hasNextPage && !isFetching) {
+      fetchNextPage();
+      console.log("🔥 throttled scroll event 감지됨");
+    }
+  }, 300);  // 스크롤 이벤트를 수동으로 감지하여 무한 스크롤 구현
+
+  const handleScroll = useCallback(() => {
+    const scrollY = window.scrollY;
+    const viewportHeight = window.innerHeight;
+    const fullHeight = document.documentElement.scrollHeight; // 스크롤 이벤트 핸들러
+
+    if (scrollY + viewportHeight >= fullHeight - 200) {
+      throttledFetchNextPage();
+    }
+  }, [throttledFetchNextPage]);
 
   useEffect(() => {
-    if (inView && hasNextPage && !isFetching) {
-      fetchNextPage();
-    }
-  }, [inView, hasNextPage, isFetching, fetchNextPage]);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
 
   return (
     <div className="relative min-h-screen bg-black px-4 py-8">
+      {/* 검색창 */}
+      <div className="flex justify-center mb-6">
+        <input
+          type="text"
+          className="w-full max-w-md px-4 py-2 rounded border border-gray-400 focus:outline-none focus:border-pink-400 text-white"
+          placeholder="LP 이름, 내용, 태그로 검색"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+      </div>
       {/* + 버튼 */}
       <button
         className="fixed bottom-10 right-10 z-50 bg-pink-500 hover:bg-pink-600 text-white text-3xl rounded-full w-16 h-16 flex items-center justify-center cursor-pointer"
@@ -250,15 +277,11 @@ export const HomePage = () => {
               <LpCard lp={lp} />
             </div>
           ))}
-        {/* 로딩 중일 때 스켈레톤 카드 5개 표시 */}
         {isFetching &&
           Array.from({ length: 5 }).map((_, idx) => (
             <LpCardSkeleton key={`skeleton-${idx}`} />
           ))}
       </div>
-
-      {/* 무한 스크롤 */}
-      <div ref={ref} className="h-10"></div>
     </div>
   );
 };
