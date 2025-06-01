@@ -1,20 +1,20 @@
-import { useDispatch } from "react-redux";
+import useCartStore from "../hooks/useCartStroe";
 import type { Lp } from "../types/cart";
-import { decrease, increase } from "../slices/cartSlice";
 
 interface CartItemProps {
   lp: Lp;
 }
 
 export const CartItem = ({ lp }: CartItemProps) => {
-  const dispatch = useDispatch();
+  const increase = useCartStore((state) => state.increase);
+  const decrease = useCartStore((state) => state.decrease);
 
   const handleIncreaseCount = (): void => {
-    dispatch(increase({ id: lp.id }));
+    increase(lp.id);
   };
 
   const handleDecreaseCount = (): void => {
-    dispatch(decrease({ id: lp.id }));
+    decrease(lp.id);
   };
 
   return (

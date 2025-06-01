@@ -1,9 +1,8 @@
-import { useSelector } from "react-redux"
 import { CartItem } from "./CartItem"
-import type { RootState } from "../store/store";
+import useCartStore from "../hooks/useCartStroe";
 
 export const CarList = () => {
-    const {cartItems}=useSelector((state:RootState) => state.cart);
+    const cartItems = useCartStore((state)=> state.cartItems)
   return (
     <div className="flex flex-col items-center justify-center">
         <ul>

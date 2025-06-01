@@ -1,11 +1,12 @@
-import { useDispatch, useSelector } from "react-redux";
-import { closeModal } from "../slices/modalSlice";
-import { clearCart } from "../slices/cartSlice";
-import type { RootState } from "../store/store";
+import useCartStore from "../hooks/useCartStroe";
+import useModalStore from "../hooks/useModalStore";
+
 
 export default function ConfirmModal() {
-  const dispatch = useDispatch();
-  const isOpen = useSelector((state: RootState) => state.modal.isOpen);
+  const isOpen = useModalStore((state) => state.isOpen);
+  const closeModal = useModalStore((state) => state.closeModal);
+
+  const clearCart = useCartStore((state) => state.clearCart);
 
   if (!isOpen) return null;
 
@@ -15,15 +16,15 @@ export default function ConfirmModal() {
         <p className="text-lg font-semibold mb-4">정말 삭제하시겠습니까?</p>
         <div className="flex justify-center gap-4">
           <button
-            onClick={() => dispatch(closeModal())}
+            onClick={closeModal}
             className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
           >
             아니요
           </button>
           <button
             onClick={() => {
-              dispatch(clearCart());
-              dispatch(closeModal());
+              clearCart();
+              closeModal();
             }}
             className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
           >
