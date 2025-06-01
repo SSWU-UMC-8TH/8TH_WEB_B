@@ -5,6 +5,7 @@ import { CarList } from './components/CarList'
 import { Navbar } from './components/Navbar'
 import store from './store/store'
 import { PriceBox } from './components/PriceBox'
+import ConfirmModal from './components/ConfirmModal'
 
 function App() {
 
@@ -13,6 +14,7 @@ function App() {
       <Navbar/>
       <CarList/>
       <PriceBox />
+      <ConfirmModal />
     </Provider>
   )
 }

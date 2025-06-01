@@ -7,4 +7,4 @@ export type Lp = {
     amount:number;
 }
 
-export type CartItem = Lp[];
+export type CartItem = Lp;
