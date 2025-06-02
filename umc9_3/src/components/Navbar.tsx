@@ -1,6 +1,6 @@
 import React from "react";
 import { FaShoppingCart } from "react-icons/fa";
-import { useCartInfo } from "../hooks/useCartStore"; // zustand cart store
+import { useCartInfo } from "../hooks/useCartStore";
 
 const Navbar = (): React.ReactElement => {
     const { amount } = useCartInfo(); // zustand에서 cart 정보 가져오기

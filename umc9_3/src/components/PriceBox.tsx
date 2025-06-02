@@ -1,7 +1,7 @@
 import React from "react";
 import { FaShoppingCart } from "react-icons/fa";
-import { useCartInfo } from "../hooks/useCartStore"; // zustand cart store
-import useModalStore from "../hooks/useModalStore"; // zustand modal store
+import { useCartInfo } from "../hooks/useCartStore";
+import useModalStore from "../hooks/useModalStore";
 
 const PriceBox = (): React.ReactElement => {
     const { total } = useCartInfo(); // zustand에서 cart 정보 가져오기

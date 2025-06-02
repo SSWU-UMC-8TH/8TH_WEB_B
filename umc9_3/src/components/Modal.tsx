@@ -1,6 +1,6 @@
 import React from "react";
-import useModalStore from "../hooks/useModalStore"; // zustand modal store
-import { useCartActions } from "../hooks/useCartStore"; // zustand cart actions
+import useModalStore from "../hooks/useModalStore";
+import { useCartActions } from "../hooks/useCartStore";
 
 const Modal = () => {
   const isOpen = useModalStore((state) => state.isOpen);

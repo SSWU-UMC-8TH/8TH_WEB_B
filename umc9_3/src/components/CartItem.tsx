@@ -1,5 +1,5 @@
 import { Lp } from "../types/cart";
-import { useCartActions } from "../hooks/useCartStore"; // zustand cart actions
+import { useCartActions } from "../hooks/useCartStore";
 
 interface CartItemProps {
   lp: Lp;
