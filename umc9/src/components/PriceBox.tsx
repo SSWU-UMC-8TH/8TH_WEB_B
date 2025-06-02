@@ -17,7 +17,7 @@ const PriceBox = (): React.ReactElement => {
             <button
                 onClick={handleOpenModal}
                 className='h-15 border p-2 rounded-md cursor-pointer'>
-                장바구니 초기화
+                전체 삭제
             </button>
             <div className="mr-80 flex mt-5">총 가격: {total}원</div>
         </div>
